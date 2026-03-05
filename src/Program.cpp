@@ -191,6 +191,10 @@ void Program::Reset() {
     count = 0;
     delay = 0;
     lives = 3;
+    
+    score = 0;
+    reset_score = 0;
+
     Enemy::enemies.push_back(std::pair<std::pair<float, float>, Enemy*> {
             std::pair<float, float>{350, 150}, 
             new SpEnemy(350, 150)

@@ -19,6 +19,7 @@ class Program {
         int delay = 0;
         int lives = 3;
         int pauseFrames = 0;
+        
         int score = 0;
         int reset_score = 0;
 
