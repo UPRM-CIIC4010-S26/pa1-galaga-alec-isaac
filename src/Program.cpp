@@ -156,6 +156,17 @@ void Program::KeyInputs() {
     if (!paused && !startup && IsKeyPressed('O')) gameOver = !gameOver;
     if (!gameOver && !paused && IsKeyPressed('I')) startup = !startup;
     if (IsKeyPressed('H')) HitBox::drawHitbox = !HitBox::drawHitbox;
+
+    if (IsKeyPressed('K')) score += 500;
+
+    if (score - reset_score >= 1000) {
+        int extra_lives = (score - reset_score) / 1000;
+        if (lives + extra_lives > 5) {
+            extra_lives = 5 - lives;
+        }
+        lives += extra_lives;
+        reset_score += 1000 * extra_lives;
+    } 
     
     if (gameOver && IsKeyPressed(KEY_ENTER)) {
         gameOver = false;
@@ -191,7 +202,7 @@ void Program::Reset() {
     count = 0;
     delay = 0;
     lives = 3;
-    
+
     score = 0;
     reset_score = 0;
 
