@@ -71,6 +71,7 @@ void Program::Update() {
 }
 
 void Program::Draw() {
+    DrawText(TextFormat("Score: %i", score), 10, 10, 24, WHITE);
     background.Draw();
     if (pauseFrames <= 0 && !gameOver) player->draw();
     for (Animation& a : Animation::animations) a.draw();
