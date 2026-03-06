@@ -45,7 +45,7 @@ class Enemy {
              }
         }
 
-        static void ManageEnemies(HitBox target) {
+        static void ManageEnemies(HitBox target, int& score, int& reset_score) {
             for (std::pair<std::pair<float, float>, Enemy*>& p : Enemy::enemies) {
                 p.first.first += (p.first.first == 0) ? 0 : direction;
                 if (p.second) {
@@ -58,7 +58,9 @@ class Enemy {
                         }
                     }
 
-                    if (p.second->health <= 0) {
+                    if (p.second->health <= 0) { 
+                        score += p.second->scoreValue;
+                        reset_score += p.second->scoreValue;
                         Animation::animations.push_back(
                             Animation(p.second->position.first, p.second->position.second, 155, 0, 33, 33, 30, 30, 4, ImageManager::SpriteSheet)
                         );
