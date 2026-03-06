@@ -16,6 +16,7 @@ class Enemy {
         
     public:
         int health = 1;
+        int scoreValue = 0;
         std::pair<float, float> position;
         HitBox hitBox;
 
