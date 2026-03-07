@@ -6,12 +6,21 @@ class DyEnemy : public Enemy {
         float angle = 135;
         float aimAngle = 225;
         bool loop = false;
+        Rectangle spriteRect;
 
     public:
         DyEnemy(float x, float y) : Enemy(x, y) { 
             this->cooldown = GetRandomValue(90, 300);
             this->health = 1;
             this->scoreValue = 100;
+
+            int type = GetRandomValue(0, 1);
+            if (type == 0) {
+                spriteRect = Rectangle {2, 128, 13, 14};
+            }
+            else {
+                spriteRect = Rectangle{2, 147, 13, 13};
+            }
         }
 
         void draw() override;
