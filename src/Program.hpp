@@ -9,10 +9,14 @@
 #include "SpEnemy.hpp"
 #include "StEnemy.hpp"
 #include "DyEnemy.hpp"
+#include "PlayerEnemy.hpp" //Bonus
 class Program {
     private:
         Background background = Background();
         Player* player = new Player((GetScreenWidth() / 2) - 15, GetScreenHeight() * 0.75f);
+// ---- Start of Bonus Area -----------------------------------------------
+        PlayerEnemy* player2 = new PlayerEnemy((GetScreenWidth() / 2) - 15, GetScreenHeight() * 0.25f);
+// ---- End of Bonus Area -------------------------------------------------
         int respawnCooldown = 1080;
         int respawns = 0;
         int count = 0;
@@ -28,6 +32,12 @@ class Program {
         bool gameOver = false;
 
     public:
+
+// ---- Start of Bonus Area -----------------------------------------------
+        bool multiplayer = false;
+        int winner = 0;
+// ---- End of Bonus Area -------------------------------------------------
+
         Program();
         
         void Update();

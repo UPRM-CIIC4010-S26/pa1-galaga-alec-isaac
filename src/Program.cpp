@@ -39,6 +39,7 @@ void Program::Update() {
         StdEnemy::attackReset();
         ManageEnemyRespawns();
         player->update();
+        if(multiplayer){player2->update();} //Bonus
 
         for (std::pair<std::pair<float, float>, Enemy*> p : Enemy::enemies) {
             if (p.second && HitBox::Collision(player->hitBox, p.second->hitBox)) {
@@ -56,11 +57,40 @@ void Program::Update() {
         }
 
         for (Projectile& p : Projectile::projectiles) { 
+
+// ---- Start of Bonus Area -----------------------------------------------
+            if(!multiplayer){
+            winner = 2;
+// ---- End of Bonus Area -------------------------------------------------
+
             if(p.ID != 0){
                 if(HitBox::Collision(player->hitBox, p.getHitBox())){
                 PlayerReset();
                 }
             }
+
+            }
+
+// ---- Start of Bonus Area -----------------------------------------------
+            else{
+
+            if(p.ID != 0){
+                if(HitBox::Collision(player->hitBox, p.getHitBox())){
+                winner = 2;
+                PlayerReset();
+                }
+            }
+
+            if(p.ID == 0){
+                if(HitBox::Collision(player2->hitBox, p.getHitBox())){
+                winner = 1;
+                PlayerReset();
+                }
+            }
+
+            }
+// ---- End of Bonus Area -------------------------------------------------
+
             p.update();
         }
 
@@ -73,7 +103,15 @@ void Program::Update() {
 void Program::Draw() {
     DrawText(TextFormat("Score: %i", score), 10, 10, 24, WHITE);
     background.Draw();
-    if (pauseFrames <= 0 && !gameOver) player->draw();
+    if (pauseFrames <= 0 && !gameOver){
+        player->draw();
+
+// ---- Start of Bonus Area -----------------------------------------------
+        if(multiplayer){
+            player2->draw();
+        }}
+// ---- End of Bonus Area -------------------------------------------------
+
     for (Animation& a : Animation::animations) a.draw();
 
     for (int i = 0; i < lives; i++) {
@@ -140,7 +178,7 @@ void Program::ManageEnemyRespawns() {
 void Program::DrawStartup() {
     DrawRectangle(0, 0, (float)GetScreenWidth(), (float)GetScreenHeight(), Color{0, 0, 0, 125});
     DrawText("Galaga", (GetScreenWidth() / 2 - 237), 75, 144, WHITE);
-    DrawText("Press Enter", (GetScreenWidth() / 2) - 75, GetScreenHeight() / 2, 24, GRAY);
+    DrawText("Press Enter (SOLO MODE) or M (MULTIPLAYER MODE)", (GetScreenWidth() / 2) - 330, GetScreenHeight() / 2, 24, GRAY); //Bonus
 }
 
 void Program::DrawPauseScreen() {
@@ -179,16 +217,44 @@ void Program::KeyInputs() {
 
     if (startup && IsKeyPressed(KEY_ENTER)) {
         startup = false;
+// ---- Start of Bonus Area -----------------------------------------------
+        multiplayer = false;
+        Reset();
+// ---- End of Bonus Area -------------------------------------------------
     }
 
     if (!startup && !paused && !gameOver && pauseFrames <= 0) player->keyInputs();
-   
+
+// ---- Start of Bonus Area -----------------------------------------------
+    if (!startup && !paused && !gameOver && pauseFrames <= 0 && multiplayer) player2->keyInputs();
+    
+    if (startup && IsKeyPressed('M')){
+        startup = false;
+        multiplayer = true;
+        Reset();
+    }
+// ---- End of Bonus Area -------------------------------------------------
 }
 
 void Program::PlayerReset() {
+// ---- Start of Bonus Area -----------------------------------------------
+    if(!multiplayer){
     Animation::animations.push_back(
         Animation(player->position.first, player->position.second, 16, 0, 33, 34, 30 ,30, 3, ImageManager::SpriteSheet)
-    );
+    );}
+
+    else{
+    if(winner == 2){
+    Animation::animations.push_back(
+        Animation(player->position.first, player->position.second, 16, 0, 33, 34, 30 ,30, 3, ImageManager::SpriteSheet)
+    );}
+
+    if(winner == 1){
+    Animation::animations.push_back(
+        Animation(player2->position.first, player2->position.second, 16, 0, 33, 34, 30 ,30, 3, ImageManager::SpriteSheet)
+    );}
+    }
+// ---- End of Bonus Area -------------------------------------------------
 
     PlaySound(SoundManager::gameOver);
     Projectile::projectiles.clear();
@@ -210,6 +276,11 @@ void Program::Reset() {
     score = 0;
     reset_score = 0;
 
+// ---- Start of Bonus Area -----------------------------------------------
+    if(!multiplayer){
+        lives = 3;
+// ---- End of Bonus Area -------------------------------------------------
+
     Enemy::enemies.push_back(std::pair<std::pair<float, float>, Enemy*> {
             std::pair<float, float>{350, 150}, 
             new SpEnemy(350, 150)
@@ -218,7 +289,7 @@ void Program::Reset() {
     Enemy::enemies.push_back(std::pair<std::pair<float, float>, Enemy*> {
             std::pair<float, float>{600, 150}, 
             new SpEnemy(600, 150)
-        });
+            });
 
     for (int i = 0; i < 30; i++) {
         float x = 250 + 50 * (i % 10);
@@ -227,6 +298,13 @@ void Program::Reset() {
         Enemy::enemies.push_back(std::pair<std::pair<float, float>, Enemy*> {
             std::pair<float, float>{x, y}, 
             new StdEnemy(x, y)
-        });
+            });}
     }
+// ---- Start of Bonus Area -----------------------------------------------
+    else{
+    PlayerEnemy((GetScreenWidth() / 2) - 15, GetScreenHeight() * 0.25f);
+    lives = 1;
+    }
+// ---- End of Bonus Area -------------------------------------------------
+
 }
